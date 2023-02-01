@@ -68,7 +68,7 @@ $("document").ready(function(){
 
     $event_list.click(function(){
         let i = $(this).index()+2;
-        $event_img.attr("src","images/eventbanner"+i+".png")
+        $event_img.attr("src","images/event"+i+".png")
         
     })
 
@@ -80,10 +80,24 @@ $("document").ready(function(){
     $sub_menu_nav.eq(0).addClass("on")
 
     const swiper4 = new Swiper(".menu-content",{
-        loop:true,
+        loop: false,
         // direction: "vertical", // 위아래
-        slidesPerView: 'auto',
-        spaceBetween: 50,
+        slidesPerView: 2,
+        spaceBetween: 10,
+        grid:{
+            rows: 2
+        },
+        breakpoints:{
+            767:{
+                loop: true,
+                slidesPerView: 4,
+                spaceBetween: 50,
+                grid:{
+                rows: 1
+        }
+
+            }
+        },
         navigation:{
             nextEl : ".swiper-button-next",
             prevEl : ".swiper-button-prev",
@@ -107,14 +121,76 @@ $("document").ready(function(){
     const $tab_list = $(".subway-sns-content .tab-content");
     $tab_list.eq(0).show();
     $tab_nav.eq(0).addClass("on")
-
+    let idx = 0;
     $tab_nav.click(function(){
         let i = $(this).index();
         $tab_list.hide().eq(i).show();
         $tab_nav.removeClass("on").eq(i).addClass("on")
+        idx = i;
 
     })
 
 
+    // mobile hamburger
+    $(".hamburger i, .m-nav i").click(function(){
+        $(".m-nav").toggleClass("on")
+})
 
+// event
+    let myswiper = null;
+    let ww = $(window).width();
+    
+    function initswiper(){
+        if(ww < 751 && myswiper == null){
+            myswiper = new Swiper(".event-img",{
+                loop: true,
+                pagination:{
+                    el: ".swiper-pagination",
+                    clickable: true
+                }
+            })
+            // mobile
+        }else if(ww > 750 && myswiper != null){
+            myswiper.destroy();
+            myswiper = null;
+            // 태블릿
+        }
+    }
+
+    let swiper5 = null;
+
+    function initswiper2(){
+        if(ww < 751 && swiper5 == null){
+            swiper5 = new Swiper(".tab-content",{
+                loop: true,
+                navigation:{
+                    nextEl : ".swiper-button-next",
+                    prevEl : ".swiper-button-prev",
+                },
+                pagination:{
+                    el: ".swiper-pagination",
+                    clickable: true
+                }
+            })
+            // mobile
+        }else if(ww > 750 && swiper5 != null){
+            swiper5[0].destroy();
+            swiper5[1].destroy();
+            swiper5[2].destroy();
+            swiper5 = null;
+            $tab_list.eq(idx).show()
+            // 태블릿
+        }
+    }
+
+
+    initswiper()
+    initswiper2()
+        $(window).resize(function(){
+            ww = $(window).width();
+            initswiper()
+            initswiper2()
+            console.log(ww)
+
+        })
 })
